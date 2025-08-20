@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emergency Email!!!</title>
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/images/favicon.png">
+  <link rel="apple-touch-icon" type="image/png" sizes="192x192" href="assets/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bitcount:wght@100..900&display=swap" rel="stylesheet">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      background-color: #fff;
+      font-family: "Bitcount", system-ui;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.1) 4px, transparent 4px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 4px, transparent 4px);
+      background-size: 25px 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .email-box {
+      background: #fff;
+      border: 1px solid #000;
+      padding: clamp(24px, 4vw, 48px);
+      box-shadow: 4px 4px 0 #000;
+      width: 100%;
+      max-width: 720px;
+      margin: 0 5vw;
+      box-sizing: border-box;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1em;
+      margin-bottom: 0.5em;
+      font-size: clamp(16px, 1.5vw, 20px);
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: clamp(10px, 1.2vw, 16px);
+      font-family: inherit;
+      font-size: clamp(16px, 1.2vw, 20px);
+      box-sizing: border-box;
+    }
+
+    #message {
+      font-family: monospace, "Bitcount", system-ui;
+      font-size: clamp(16px, 1.2vw, 20px);
+      height: clamp(200px, 30vh, 300px);
+      width: 100%;
+      box-sizing: border-box;
+      padding: clamp(10px, 1.2vw, 16px);
+      background: #fff;
+      border: 1px solid #000;
+      white-space: pre-wrap;
+      overflow-y: auto;
+    }
+
+    button {
+      margin-top: 1em;
+      background: #000;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 #888;
+    }
+
+    button:hover {
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="email-box">
+    <label for="from">From:</label>
+    <select id="from">
+      <option value="Aman">Aman</option>
+      <option value="Amoce">Amoce</option>
+      <option value="Amanoce">Amanoce</option>
+      <option value="Julius">Julius</option>
+      <option value="Pooja">Pooja</option>
+      <option value="Amocey">Amocey</option>
+      <option value="Joy">Joy</option>
+      <option value="Krystal">Krystal</option>
+      <option value="Jogitha">Jogitha</option>
+      <option value="Ananya">Ananya</option>
+      <option value="Lamba">Lamba</option>
+      <option value="Nidhi">Nidhi</option>
+      <option value="Aashna">Aashna</option>
+      <option value="Aashnoce">Aashnoce</option>
+      <option value="Bhairavi">Bhairavi</option>
+      <option value="Bhairoce">Bhairoce</option>
+      <option value="Bhoceroce">Bhoceroce</option>
+      <option value="Bhevvs">Bhevvs</option>
+      <option value="Bhairu">Bhairu</option>
+      <option value="Surya">Surya</option>
+      <option value="ArtItself">ArtItself</option>
+      <option value="Shamira">Shamira</option>
+      <option value="Chikki">Chikki</option>
+      <option value="Anvita">Anvita</option>
+      <option value="Michelle">Michelle</option>
+      <option value="MichyTheFishy">MichyTheFishy</option>
+      <option value="Jitesh">Jitesh</option>
+      <option value="Jitaysh">Jitaysh</option>
+      <option value="Pringy">Pringy</option>
+
+    </select>
+
+    <label for="subject">Subject:</label>
+    <input type="text" id="subject" readonly />
+
+    <label for="message">Message:</label>
+    <pre id="message" readonly></pre>
+
+    <button id="randomize">🎲 Randomize</button>
+    
+  </div>
+
+  <script>
+    const emails = {
+      Aman: {
+        subject: "hi ro.",
+        message: `hi ro. 
+remember that one time we went to either inorbit or seawoods mall, can't recall, and we played pool, sat at that resto-bar, drank beer and ate masala papad.
+that was fun... 
+thanks`
+      },
+      Amoce: {
+        subject: "hello again.",
+        message: `dear ro, 
+you're a glimpse of hope, amidst the void that consumes us all. you're a reason. 
+a reason to create, a reason to smile, a reason to be better, a reason to always search deeper into the internal psyche; never forget this. 
+you are the reason for so much happiness in my life; the least you could do is share a sliver of that with yourself - you deserve to.`
+      },
+      Amanoce: {
+        subject: "perfect lesbian....",
+        message: `ro, 
+you're literally the 'perfect lesbian'. no matter how bad things get, you can't escape the fact that you're charming and attractive; universally. 
+you're doing amazing things and as all amazing things do, it takes time. be patient, we're here waiting with you. no one is left hungry.`
+      },
+      Julius: {
+        subject: "meow rreow",
+        message: `ur lucky i have blessed u with another year. yes i have the body type of a melting mozzarella stick but that just so happens to be the body type of ur GOD...`
+      },
+      Pooja: {
+        subject: "Dear Ro",
+        message: `Being a believer of synchronicity over coincidences (shoutout to Car Jung), I'm certain that meeting you was no coincidence! Our threads were always connected even before we met. I met you through Kali (shoutout to Michelle, lol). Literally how I got introduced to you, 'I have a friend and she's amazing, she is also into Kali and these things, I guess you guys will connect well, you two should definitely meet', paraphrasing Michelle. Andddd, voila! My Kali energy in flesh! <3
+
+You know what your presence does? At least in my case, giving me child-like joy, excitement and comfort. You become the space where anybody could be anything they want to be! But hey, you're also such a cat! Swinging by, silently observing, deducing and knowing exactly where to put how much of what! Also, the funniest, without even trying!
+
+There's mad respect for who you choose to be, what you do and what you keep striving for. Okay, I'm getting emotional typing this out. I see you. I see you in the ways you constantly try to give to your people and community at large. You are a master, not the one going around claiming or flaunting their proficiency or skills or knowledge but that wise one- the one that enables, nurtures, supports, the one that sees and hears, the one that shares the path and shows the vision. You are that, you are a guru. In the spiritual tradition I lean towards, a guru holds a place of the highest order after earning it. You hold that place in my life. Beyond all that we are co-creating and striving for, I love you for who you are. Thank you for existing, for sharing love, the good and light in this world. You give me hope and with you, I feel like I could even change the world order. We shall do that too before we say Hi to Death and swing by in that realm, lol. 
+
+Happiest Birthday to you, Ro! Here's to more art, realms, representation, revolution, possibilities, stories, emotions, love, joy and a million other crazy things worth living! Lead us like the Sun in every universe! May the world hold space for you and your gifts! Love and Respect! <3`
+      },
+      Amocey: {
+        subject: "hellohini",
+        message: `hellohini, 
+i just remembered this random snippet from the past, in around 9th-10th grade I think. I was having a fallout with the boys in school, and i remember at one point, i randomly texted you and FULLY bitched about each and every one of them. I name dropped them one by one and picked out flaws in them one by one. It was really stupid of me because your loyalties OBVIOUSLY lied with Shiven; y'all were dating. So yeah, the start of the end - but, just a funny memory that came to me, I wonder if u remember that too.`
+      },
+      Joy: {
+        subject: "from the jo to the ro",
+        message: `roromans, happy birthdayy
+you are one of the best among us
+all my life I've lived all around India and met so many people but
+there's not a lot of people (maybe 3 or 4) that I've met and felt like oh I look up to this person or oh I am inspired by this person but you
+you're def one of them
+like I wouldn't mind going on an hour long silent hike w you and I can rarely say that for anyone
+we should have more brain to brain type chats I feel like I always want to but don't know how
+I'm so glad that I know someone like you
+you have no idea how much that means to me`
+      },
+      Krystal: {
+        subject: "how do you wipe",
+        message: `This question rocked my world  not only by literal sense, but so much more….
+Now everyday I think of you, jk, just how I wipe
+K.rock`
+      },
+      Jogitha: {
+        subject: "We're Both Fucked Up, But At Least We're Not Alone",
+        message: `Dear Ro,
+
+I’m not really sure what I wanted to say in this letter, but I felt like I needed to write. I guess you could say I’m the kind of person who writes a lot of letters to friends, so I figured it was bound to happen eventually. I’m honestly glad Ananya made me sit down and do it. It feels good to put my thoughts into words.
+
+First off, I just want to tell you that I think you’re an amazing person. You’re so kind, so talented, and you’ve got this rare ability to always be open to learning. That’s something a lot of us in the queers lack. We get defensive, or we hide behind a tough exterior because we’ve had to fight so hard in the world. But you? You’re like a sweet, grounded lesbian flower who looks out for her friends. And it blows my mind that we’ve known each other for two years now!
+
+When I think about our friendship and how much it’s grown, I can’t help but think back to the hardest year of my life. You were there when my dad passed and when my dog died. That year was rough, and I even lost a lot of friends because I couldn’t be myself. I couldn’t be happy. But you? You stuck around. You came through for me, even when you didn’t have to. I’ll never be able to fully express how much that meant to me. You were a constant when everything felt like it was falling apart.
+
+I remember that time at your party when everyone was shouting “Fuck you, dad” Without even thinking, I said it too. And then it hit me, my dad’s gone. But I laughed so hard, and you got it. You understood why I laughed. You knew it wasn’t just about the words. It was about finding a way to deal with the pain and still laugh about it also our dads are assholes right.... death don't absolve shit. That meant a lot to me... we just the same type of broken because of our narcissistic dads.
+
+One thing I really admire about you is the way you’ve learned to trust yourself, especially when it comes to your art. You’re brave, and you express yourself so openly. You’ve built this confidence that I really aspire to have in my own life. I want to be able to trust my abilities the way you do, and I hope I can get there one day.
+
+We’re Both Fucked Up, But At Least We’re Not Alone
+
+I love our conversations about art and science. Every time we talk, I feel like I’m learning something new. It’s not just about the knowledge, though. It’s about the way you open up my world. You introduce me to so many great people, and that’s something I really value. Meeting the people you love has been so eye-opening because they’re just as good as you are. And that’s why I value our friendship so much. You’ve shown me a new way of looking at things, and I hope you keep bringing these amazing people into my life.
+
+I think one of the reasons we connect so well is because we share the same dark sense of humor. We laugh at the mess of life more than we take it seriously, and it helps us both deal with everything that comes our way. Honestly, I feel like I’ve opened up to you more than anyone else, all while laughing about how messed up life can be.
+
+Anyway, I guess what I’m saying is you’re kind of like my favorite emotional support person without the official therapy license. But hey, at least you’re not charging me by the hour :P Let’s keep surviving, thriving, and laughing at how ridiculous everything is because we both know life is a joke, and we’re just in on it and not like we can die together, or can we?
+
+I really hope I bring the light into your life like you have..... I am always here for you, promise!
+
+
+Love 
+Mojo Jojo :*`
+      },
+
+      Ananya: {
+        subject: "To my DEAREST LOCEY LOCER",
+        message: `Dear ro
+I am in ur room and ur out there somewhere doing something. Being helpful to someone else. 
+I know there’s a lot to do, there really is an awful lot to do. I miss you every time, especially when you have to do these excursions of yours on the weekend. Its like I’m waiting for my husband to come back from war.
+But I am so deeply in love with that side of you and I honestly wouldn’t have it any other way.
+I am so glad we get to plan this life together, the thought of me planning my life with you adds more colour to it in a very literal way. 
+You keep trying to convince me about your introvertedness or shyness, but you are so much more open to the world than you make yourself out to be. I wish you could understand the respect and love with which so many people, so many important people, see you. Just seeing these letters I’ve received so far from your friends for this — its not like they just wrote a hey hi happy birthday situation and called it a day, it’s always a whole manifesto about the kind of person you are to them. And even if its a short write up, it’s some kind of reference to a very specific part of your friendship, or some kind of double meaning — its like even the shortness of the letter speaks to something super specific about you, you know what I mean?
+I think you are a marvel of a person. They few people that do know you are overwhelmingly lucky to get to know you. Before you came along, I was looking so hard for what to do. I know what to do now, my locer. I have a planner full of things to do with you.
+LOCE YOU AND HOCEY BOCE DOCE`
+      },
+
+      Lamba: {
+        subject: "You will have to decode this",
+        message: `01010111 01101000 01100001 01110100 00100000 01101001 01110011 00100000 01110100 01101000 01100101 00100000 01100010 01100101 01110011 01110100 00100000 01101100 01100001 01101110 01100111 01110101 01100001 01100111 01100101 00100000 01110100 01101000 01110010 01101111 01110101 01100111 01101000 00100000 01110111 01101000 01101001 01100011 01101000 00100000 01001001 00100000 01100011 01100001 01101110 00100000 01110100 01100101 01101100 01101100 00100000 01111001 01101111 01110101 00100000 01110100 01101000 01100001 01110100 00100000 01111001 01101111 01110101 00100000 01101001 01101110 01110011 01110000 01101001 01110010 01100101 00100000 01101101 01100101 00111111 00100000 01001001 00100000 01110100 01101000 01101001 01101110 01101011 00101100 00100000 01101001 01110100 00100000 01110011 01101000 01101111 01110101 01101100 01100100 00100000 01100010 01100101 00101100 00100000 01101100 01101001 01101011 01100101 00100000 01111001 01101111 01110101 00101100 00100000 01100001 01110100 00100000 01100110 01101001 01110010 01110011 01110100 00100000 01101001 01101110 01100100 01100101 01100011 01101001 01110000 01101000 01100101 01110010 01100001 01100010 01101100 01100101 00101100 00100000 01100010 01110101 01110100 00100000 01100010 01111001 00100000 01110100 01101000 01100101 00100000 01100101 01101110 01100100 00101100 00100000 01100001 00100000 01110111 01101111 01101110 01100100 01100101 01110010 00100000 01110100 01101000 01100001 01110100 00100000 01001001 00100000 01100110 01101001 01101110 01100100 00100000 01101101 01111001 01110011 01100101 01101100 01100110 00100000 01101100 01110101 01100011 01101011 01111001 00100000 01110100 01101111 00100000 01110101 01101110 01100100 01100101 01110010 01110011 01110100 01100001 01101110 01100100 00101110`
+      },
+
+      Nidhi: {
+        subject: "Things you'll need",
+        message: `Hey Ro,
+
+It is your birthday today and you’ll be 27 for a whole year now. Congratulations.
+Your prefrontal cortex has fully developed. You’re finally settling into the person you’ve inevitably become. 
+Take a moment to take this in. Are you pleased? I think you should be extremely pleased with the person you’ve become. 
+In case you’re not extremely pleased, here are a few things that could make being 27 easier:
+1.⁠ ⁠Cake. Any and all kinds of cake will make you happy from now on. Even the bad ones, because you’ll appreciate that at the very least, it’s sweet, just like it promised it would be.
+2.⁠ ⁠Videos of dogs reuniting with their owners. Even though you’re a cat person, you’ll cry to these videos. But in a nice cathartic way. 
+3.⁠ ⁠Pillows with lumbar support. You’ll start to smile in a whole new way when your back is supported correctly. It won’t be the smile of youth or adventure, but one of deep adult gratitude.
+4.⁠ ⁠Pouches that can carry everything you’ll need. You’ll need things now. Like antacids, ORS, ear buds. One day you will look into your bag and realise you’ve carried a small but impressive medical store. It will make you happy.
+5.⁠ ⁠Early bedtimes. Early bedtimes will start to mean more to you than it reasonably should. Your day will be better when you realise you’ve just slept for 8 hours. They get rarer and more precious. Savour them, they won’t always be this good.
+Be prepared to receive an updated list on your 28th birthday, at which point ergonomic footwear will feature more prominently.
+Love,
+Nid`
+      },
+
+    Aashna: {
+        subject: "roninny",
+        message: `everytime I listen to the meow meow version of any song i think about u...i don't even know why but it just reminds me of u`
+      },
+
+    Aashnoce: {
+        subject: "ib teachers unite",
+        message: `thank u for being a relatable and xtremely cool  IB teacher in my life because i don't know anyone else in my circle who's part of this IB world  nonsense and it is truly a comfort to talk to another teacher!!`
+      },
+
+
+      Bhairavi: {
+        subject: "hewwo",
+        message: `your friendship and love is a huge part of why i felt hopeful—and even excited—about moving back to mumbai. thank you, your love and presence helped me approach a scary decision with courage and faith.`
+      },
+
+
+      Bhairoce: {
+        subject: "your gay helped me find my gay",
+        message: `once when we were in 7th grade, i had a dream in which we kissed. i woke up and i was like “huh….” i’ve never felt like there was/is anything sexual or romantic to it—rather, it was my gaydar discovering what would soon grow into giving myself permission to open up and explore my own queerness. you are so wonderfully, unapologetically yourself despite imposed external norms and expectations. growing up, you’ve modelled possibilities to me i couldn’t have encountered or imagined by myself. it has, and always will, mean a lot to me.`
+      },
+
+      Bhoceroce: {
+        subject: "your spirit",
+        message: `i remember in 6th grade you got into trouble for making a satirical comic about sexism and the hypocrisy of our educators who tout critical thinking while shutting down and punishing anyone who dares to question oppressive norms. that was so metal of you. i still think about that comic sometimes, how your spirit encouraged us to question authority and seek freedom in the mundane, while embracing the stupidity of it all with silliness and levity.`
+      },
+
+      Bhevvs: {
+        subject: "you goof",
+        message: `you are so silly and goofy and i really love you for it. what else is life about.`
+      },
+
+      Bhairu: {
+        subject: "dosti",
+        message: `i am so excited to see you grow in your art, your thought, your whole self. you have a beautifully open, audacious, and vibrant heart that demands the same from those around you. and we are all better for it. thank you for being my dear friend, for showing me your heart, and encouraging me to embrace mine. i am so pumped to see how our friendship will grow, now that we are in the same place!!!!!`
+      },
+
+      Surya: {
+        subject: "appreciation",
+        message: `yo ro . You the realest 🤘🏽. I totally did not expect to be a recurring character in your life after u dropped ur MFA 🥲 but im very glad you invited me into your collective of incredible individuals. You make every environment so much more special- I treasure all the time spent in your presence from watching that damn Ghoda fall apart coming down the stairs, to the warmth of your jams & practices thru the walls of my bedroom. Keep being u and you’ll always be that ingredient that makes every meal taste fiyaaa 👅 
+
+May our paths cross many more times 
+Stay woke 👁️
+Toodles`
+      },
+
+      ArtItself: {
+        subject: "The Message",
+        message: `The Medium`
+      },
+
+      Shamira: {
+        subject: "Judo co-curriculars, 2nd grade",
+        message: `I think one of us had an injured arm, the other was generically sick. Or maybe you weren’t in judo at all, and were just hanging around there. Now that I’m thinking of it, maybe it was the fourth grade? Impossible to fully know for sure.
+I was kind of pumped to discover somebody else had an email id too, and I was a little excited to make friends with someone from across the aisle (section A). No idea what we yapped about but Cawas def told us to keep quiet at least once and then when you did write the first email that I remember, it was signed off “Rohini the Great,” which I really humorously turned back on you as “Rohini the Grape”… v clever. 
+We did a lot of emailing and G-chatting in the middle, with Jeevika and Aman and Anvita, and you told me to listen to Chicken Fried by Zac Brown Band, told me what Glee and Defying Gravity were, and actually those are the only coherent bits I remember from the emails.
+This is supposed to be about the history of email through the lens of us as school children but I must also mention that one time we saw a comic strip from Pearls Before Swine and we lost our collective minds. You drew a few of your own also. Something in there about feral ballerinas. 
+We graduated to Teen Angst emails in like the eighth grade, but I hate this time and will not talk about it. We wrote a song. Which is to say that I wrote 8 lines as a parasitic second verse to your already banging song. I cannot believe I was fourteen once. I found it really gross that you and Anvita were kissing boys btw. (Even back then, I stood for what was right).
+From 
+Shamoira`
+      },
+
+      Chikki: {
+        subject: "Dear Tony",
+        message: `You are the most multi-talented person I know. I knew it from the moment you did a fully self-produced self-performed music video of The Show by Lenka.
+I’ve seen so many versions of you, and while you’re still as goofy and unproblematic as ever, you’ve become more confident and open, and it’s a character arc the audience (me) has loved seeing. At the same time though, it’s so nice to know that despite everything you’ve been through, you still believe in the best in people. I think it is such an important quality to have.
+It is also objectively admirable that so many of your goals involve doing things for the world around you. Even outside of your many projects, I think your instinct is to give. It might sound stupid to say that you have great critical thinking skills and empathy but I cannot emphasise how rare those things are, let alone in combination. You care about all the right things. I don’t want this to sound like a report card assessment, but it’s an A+ from me.
+You have such warmth and congeniality, and I hope the people you choose to engage with give you the space and support to cultivate it.
+Don’t let people take advantage of you. Scam call aaye, toh cut karne ka. Remember that sometimes the spam caller is your father. Aur yeh yaad rakho ki jo bhi ho - masti nahi rukni chahiye.
+I hope that everything you give the world, it offers back to you.
+xoxoxo
+Roadies Customer Service Team`
+      },     
+      
+      Anvita: {
+        subject: "Hello!!!",
+        message: `Happiest of bdays to the coolest cat in town! 
+
+I think it’s been like 8 years or more that we’ve hung out, but our 8th grade memories are still something I hold so close to my heart. You had the worst influence on me in the best of ways - it was so hilarious running away from history class to hang out in the lawn with your ukulele, and even more outrageously fun to almost fail math with miss Monica coz we just kept laughing in the front bench. But you also had the best influence on me in the best of ways - I mean I was in band coz of you even though I was deathly shy of performing in front of anyone! 
+
+You were the funniest, funnest and most original person I’d ever met (you still probably are, sorry for the past tense) and I genuinely had the best times with you. So even though it’s been a hella long time since high school, I will always have so much love for you. 
+
+I’m sure you’re doing amazing and I hope you have the best bday (this bday gift is so cool and creative btw)! 
+
+Love, 
+Anvita`
+      },
+
+      Michelle: {
+        subject: "Dear Rohini",
+        message: `as i write this i'm going through all the notes i jot down in the little notebook you gifted me before i left for vienna; a lot of it is to-do lists, grocery lists, some very empathetic pleas to myself to get my shit together. but some of it is also doodles, observations about the world around me, art references, things i liked, things that inspired me. i think you (our whole friend group but mostly you) have been the driving force behind me getting my creativity and joy back. watching you make art so freely and with so much fervour has been both a joy for me and a motivation to follow suit. it's very rare to come across someone who knows themselves so well or at least knows who they want to be. to see you be so unapologetically yourself no matter what is incredibly beautiful and i'm  excited to see how much more you can create and do with your talent and sheer enthusiasm. thank u for being such a cool friend <333
+-mich
+`
+      },
+
+      MichyTheFishy: {
+        subject: "Dear Rohini again...",
+        message: `this is another appreciation email specifically to thank you for being a ridiculously supportive and attentive friend, it's kind of giving lesbian grandma i won't lie. whether its helping produce and arrange a whole track, feeding all of us whenever we're at your place, making sure everyone is okay and tended to, you have a very nurturing personality under all that leo-ness and it's such a delight to witness and be at the receiving end of!!! i am very grateful to call you a friend !!!! i also think that if we met in ambani it would have been really funny because i can totally see me persuading you to get into all the bands i was into; a preteen rohini listening to tokio hotel is truly something... CHECK OUT TOKIO HOTEL LOL and also paramore !! AND KEEP BEING INCREDIBLE !!!!!!!!`
+      },
+
+      Jitesh: {
+        subject: "GOT",
+        message: `GOT`
+      },
+
+      Jitaysh: {
+        subject: "Ringleding",
+        message: `Remember how you slept under a bed for at least two weeks`
+      },
+
+      Pringy: {
+        subject: "ECH BEE DEE PEE PEE POO POO",
+        message: `HAPPY BIRTHDAY ROHINI! I HOPE U HAVE THE GREATEST DAY! KEEP SHINING U STAR WE ALL LOVE YOU`
+      },
+
+
+
+
+    };
+
+    const fromSelect = document.getElementById('from');
+    const subjectInput = document.getElementById('subject');
+    const messageBox = document.getElementById('message');
+    const randomizeBtn = document.getElementById('randomize');
+
+    function updateEmail() {
+      const selected = fromSelect.value;
+      subjectInput.value = emails[selected].subject;
+      messageBox.textContent = emails[selected].message;
+    }
+
+    fromSelect.addEventListener('change', updateEmail);
+
+    randomizeBtn.addEventListener('click', () => {
+      const optionsCount = fromSelect.options.length;
+      const randomIndex = Math.floor(Math.random() * optionsCount);
+      fromSelect.selectedIndex = randomIndex;
+      updateEmail();
+    });
+
+    updateEmail(); // initialize with first selection
+  </script>
+</body>
+</html>

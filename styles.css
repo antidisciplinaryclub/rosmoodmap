@@ -1,0 +1,76 @@
+/* General Reset */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.1) 4px, transparent 4px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.1) 4px, transparent 4px);
+  background-size: 25px 25px;
+}
+
+/* Font for hover text */
+.hover-text {
+  font-family: "Bitcount", system-ui;
+  font-weight: 400;
+  font-size: 1.2rem;
+  color: black;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 6px 10px;
+  border-radius: 4px;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+/* Container holding all images */
+#container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Style for bouncing image links */
+.bouncing-image {
+  position: absolute;
+  display: block;
+  width: 15vw;
+  height: auto;
+  z-index: 1;
+  cursor: pointer;
+  user-select: none;
+  pointer-events: auto;
+  transition: transform 0.1s linear;
+}
+
+.bouncing-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+
+.bouncing-image:hover .hover-text {
+  opacity: 1;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .bouncing-image {
+    width: 22vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .bouncing-image {
+    width: 26vw;
+  }
+}

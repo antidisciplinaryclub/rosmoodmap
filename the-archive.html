@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ACHIEVEMENT ARCHIVE</title>
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/images/favicon.png">
+  <link rel="apple-touch-icon" type="image/png" sizes="192x192" href="assets/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bitcount:wght@100..900&display=swap" rel="stylesheet">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #fff;
+      font-family: "Bitcount", system-ui;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.1) 4px, transparent 4px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 4px, transparent 4px);
+      background-size: 25px 25px;
+      overflow: auto;
+      position: relative;
+    }
+
+    .quiz-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+
+    /* START SCREEN */
+    .start-screen {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto 30px auto;
+      padding: 40px 20px;
+    }
+
+    .quiz-title {
+      font-size: 3.2rem;
+      line-height: 1;
+      margin: 0;
+      letter-spacing: 0.6px;
+    }
+
+    .quiz-rules {
+      font-size: 1.1rem;
+      max-width: 720px;
+      margin: 0;
+      color: #222;
+      line-height: 1.5;
+    }
+
+    .start-button {
+      padding: 14px 28px;
+      font-size: 1.2rem;
+      border: 2px solid #000;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.18s ease-in-out;
+      margin-top: 8px;
+    }
+
+    .start-button:hover {
+      background: #0011ff;
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 30px;
+    }
+
+    .question {
+      font-size: 1.8rem;
+      margin: 30px 0;
+    }
+
+    /* reserved image area to prevent layout shift */
+    .question-image {
+      margin-bottom: 18px;
+      height: 160px;              /* reserved space so the page doesn't jump when image loads */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .question-image img {
+      display: block;
+      margin: 0 auto;
+      max-height: 100%;
+      max-width: 45%;
+      /* removed % height to avoid reflow; using max-height keeps image responsive */
+    }
+
+    /* Options container is limited in width so the Back button can be proportioned against it */
+    .options {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* centers the options horizontally */
+      margin-top: 10px;
+      padding: 10px;
+      gap: 12px; /* <-- adds space between each button */
+      width: 100%;
+      max-width: 700px;   /* keeps options and Back button grouped and constrained */
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .options label {
+      text-align: center; 
+      width: 100%; 
+      max-width: 400px; /* keeps it from stretching too wide */
+      margin: 6px 0;
+      cursor: pointer;
+    }
+
+    .options button {
+      padding: 18px 28px;
+      font-size: 1.3rem;
+      border: 2px solid #000;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      width: 100%;
+    }
+
+    .options button:hover {
+      background: #000;
+      color: #fff;
+    }
+
+    /* Nav row sits underneath the option buttons, aligned left inside the constrained options area */
+    .nav-row {
+      display: flex;
+      justify-content: flex-start; /* places Back button bottom-left of the options area */
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    /* Back button is visually distinct and much narrower than the full option width */
+    .back-button {
+      padding: 8px 12px;
+      font-size: 0.95rem;
+      border: 1px solid #000000;
+      background: #f7f7f7;
+      cursor: pointer;
+      transition: all 0.15s ease-in-out;
+      width: 25%;             /* about a quarter of the options area */
+      min-width: 84px;        /* ensures it's usable on very small screens */
+      max-width: 160px;
+      text-align: center;
+      align-self: flex-start; /* ensure it sits at the left edge */
+      box-shadow: none;
+    }
+
+    .back-button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      background: #fff;
+    }
+
+    .back-button:hover:not(:disabled) {
+      background: #ff0000;
+      color: #fff;
+    }
+
+    /* Slight visual separation from the option buttons */
+    .back-button {
+      border-radius: 2px;
+    }
+
+    .result-title {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .result {
+      font-size: 1.5rem;
+      margin-top: 20px;
+      line-height: 1.7;
+      max-width: 800px;
+    }
+
+    .result-logo {
+      margin-top: 30px;
+    }
+
+    .result-logo img {
+      width: 200px;
+      transition: transform 0.3s ease-in-out;
+      cursor: pointer;
+    }
+
+    .result-logo img:hover {
+      transform: scale(1.1);
+    }
+
+    /* small responsive tweak so the back button remains usable on narrower screens */
+    @media (max-width: 420px) {
+      .question-image { height: 120px; }
+      .options { max-width: 320px; }
+      .back-button { width: 30%; min-width: 74px; }
+      .quiz-title { font-size: 2.2rem; }
+      .quiz-rules { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <!-- START SCREEN -->
+    <div id="startScreen" class="start-screen" aria-hidden="false">
+      <div class="quiz-title">THE ACHIEVEMENT ARCHIVE</div>
+      <p class="quiz-rules">
+        Find out which one of Rohini's creative paths could be yours too. Answer 15 short questions. Choose the option that fits you best. You can go back to change an answer anytime.
+        Results are based on your choices. Click <strong>Start</strong> when you're ready.
+      </p>
+      <button id="startBtn" class="start-button" onclick="startQuiz()">Start</button>
+    </div>
+
+    <!-- QUIZ + RESULT -->
+    <div id="quiz" aria-hidden="true"></div>
+    <div id="result" aria-hidden="true"></div>
+  </div>
+
+  <script>
+    const quizData = [
+      { question: "Q1. You wake up in a vast library with endless corridors. Where do you wander first?",
+        options: ["History section","Kids’ corner, crayons everywhere!","Magazines & glossy covers","Music section, vinyls spinning"] },
+      { question: "Q2. As you’re exploring, a stranger approaches carrying a sketchbook: 'We’re building something — want to join?'",
+        options: ["Yes, let’s build off what’s already here!","Sure, but can I bring my friends?","I’ll only join if I get to do the creative direction.","Wait, is there funding involved?"] },
+      { question: "Q3. They hand you a magical object for the journey. You pick:",
+        options: ["A microphone with the crispiest autotune","A paintbrush that never runs out of color","A scroll full of old family secrets","A toy train that travels the world"] },
+      { question: "Q4. Following the path, you enter a new world. Which setting excites you most?",
+        options: ["A buzzing arts festival with some krazy installations","A quiet small town with kids laughing and drawing","A recording studio filled with tangled wires","A photo shoot with stylists and big lights"] },
+      { question: "Q5. A guide offers you a role in this new world. You choose the one that says…",
+        options: ["It’s about mentoring new voices.","It’s about discovering forgotten history.","It’s about teaching but in a wild, fun way.","It’s about getting signed to a label."] },
+      { question: "Q6. The path forks, and each road hums with a different energy. You feel pulled toward:",
+        options: ["Spiritual & ancestral","Playful & community-driven","Professional & glamorous","Bold & experimental"] },
+      { question: "Q7. A trial appears: a wall covered in blank canvases, waiting for you to make your mark. What’s your creative superpower?",
+        options: ["Teaching people how to make art fun again","Singing to crazy people","Bridging old with new, carrying forward legacies","Digging up stories no one’s talking about"] },
+      { question: "Q8. You survive the trial and stumble into a party — the kind where everyone’s a little too artsy for their own good. What are you doing?",
+        options: ["Singing karaoke","Sitting in the corner, rolling","Taking over the art supplies and making everyone draw","Styling your friends for a spontaneous photo shoot"] },
+      { question: "Q9. The buffet table glows mysteriously. What snack calls to you?",
+        options: ["Cheese popcorn & coke","Sour chewy candy","A warm cup of chai","A champagne glass"] },
+      { question: "Q10. A child runs up with a drawing. Your instinct is to say…",
+        options: ["Wow, let’s put this in a gallery!","Do you want me to teach you shading?","This reminds me of your great-grandparents’ story…","This could be a killer album cover."] },
+      { question: "Q11. A soundtrack begins playing in the background as the room changes. It is…",
+        options: ["Acoustic indie folk","PC pop anthem","Ilaiyaraaja","Silence, just colours and visuals"] },
+      { question: "Q12. A challenge blocks your way: a panel of critics stares, waiting for you to prove yourself. You can only overcome it by…",
+        options: ["Make all the critics your artistic collaborators","Bringing new life and perspective to an existing project","Diving into an unknown place and finding stories","Reinventing yourself with a new aesthetic"] },
+      { question: "Q13. You reach a grand stage. 500 people are waiting. What do you do?",
+        options: ["Sing your heart out","Teach them how to draw","Unveil a sculpture","Deliver a lecture about your past"] },
+      { question: "Q14. Suddenly, a brand approaches with money. You decide to…",
+        options: ["Build an installation","Record a music video","Fund a community class","Travel to villages and run workshops"] },
+      { question: "Q15. At the end of the path, you stand before a glowing mirror in an art gallery. It whispers: 'You will be remembered for…'",
+        options: ["Your voice, your songs, your music","Your mentorship and guidance","Your ability to uncover untold stories","Your art practice that brought people together"] }
+    ];
+
+const resultsData = {
+  nazaria: { 
+    title: "Nazaria", 
+    text: "You’re someone who values building on what already exists and nurturing others along the way. Like Rohini at Nazaria, you thrive in collaboration, mentorship, and finding your place in a legacy while making it your own.", 
+    logo: "assets/images/nazarialogo.png",
+    link: "https://www.linkedin.com/feed/update/urn:li:activity:7354466808105447425/" 
+  },
+  indiegrrrl: { 
+    title: "Indiegrrrl", 
+    text: "You have a bold artist identity and care about visibility and self-expression. Like Rohini with Indiegrrrl, you’re figuring out how to balance art with its business side, carving space for yourself in a larger creative movement.", 
+    logo: "assets/images/indiegrrrllogo.png",
+    link: "https://www.instagram.com/p/DKjLYLVSHBM/?hl=en" 
+  },
+  bombay: { 
+    title: "Bombay Tamil History", 
+    text: "You’re deeply curious about roots, culture, and identity. Like Rohini with this project, you aren’t afraid to unearth what’s hidden, even when it’s uncomfortable — you know that truth and history fuel connection in the present.", 
+    logo: "assets/images/bombaylogo.png",
+    link: "https://bombaytamilhistory.wordpress.com/?fbclid=PAZXh0bgNhZW0CMTEAAacaTEmzb6IhmDiS99WKRzrgfoajETCg4aI61bYqjTe_CAddrd4WqRK-PLswtg_aem_f1RMWaAEKKInehMfDGNWSA" 
+  },
+  fala: { 
+    title: "FALA", 
+    text: "You’re playful, nurturing, and hands-on. Like Rohini with FALA, you’re happiest when you’re mentoring and creating with others, especially kids, bringing joy and art into everyday life while staying close to your own roots.", 
+    logo: "assets/images/falalogo.png",
+    link: "https://romaitiart.wordpress.com/2023/02/09/fala-future-arts-and-learning-alternatives-phase-12020-2023/" 
+  },
+  adc: { 
+    title: "ADC", 
+    text: "You’re a community builder who believes art should be fun, freeing, and accessible. Like Rohini with ADC, you thrive on collaboration, breaking monotony, and reminding people why creativity matters.", 
+    logo: "assets/images/adclogo.png",
+    link: "https://antidisciplinary.club/" 
+  },
+  music: { 
+    title: "Music", 
+    text: "You’re an explorer of sound and feeling. Like Rohini’s music, you’re ever-evolving, unafraid to experiment, and driven by pure expression. You know art isn’t about one moment, but about building a body of work that’s alive and changing.", 
+    logo: "assets/images/musiclogo.png",
+    link: "https://open.spotify.com/user/rohinimaiti98?si=08f6c4e04c024bb9" 
+  },
+  kalaghoda: { 
+    title: "Kala Ghoda Arts", 
+    text: "You’re bold, ambitious, and love creating work that makes people stop and look. Like Rohini at Kala Ghoda, you see art as something larger than yourself — a statement, an installation, something that engages the world.", 
+    logo: "assets/images/kalaghodalogo.png",
+    link: "https://www.instagram.com/p/DFpvCR6CSTM/" 
+  },
+  elle: { 
+    title: "Elle", 
+    text: "You’re playful, stylish, and a little fearless in showing who you are. Like Rohini’s first Elle shoot, you embrace the joy and awkwardness of being seen, even when you’re still figuring yourself out.", 
+    logo: "assets/images/ellelogo.png",
+    link: "https://elle.in/article/name-to-know-rohini-maiti/" 
+  },
+  tikao: { 
+    title: "Tikao", 
+    text: "You don’t take failure too seriously — for you, it’s all part of the fun. Like Rohini with Tikao, you know that creativity isn’t always polished or 'successful,' but the memories, friendships, and laughter make it worthwhile.", 
+    logo: "assets/images/tikaologo.png",
+    link: "https://www.youtube.com" 
+  },
+  gracias: { 
+    title: "Gracias Granny Open Mic Nights", 
+    text: "When it comes to crowds, you think the more the merrier. Like Rohini as a host in the Open Mic Nights at GGs, you bring people in, make them feel included and make them come out of their shell", 
+    logo: "assets/images/graciaslogo.png",
+    link: "https://www.instagram.com/p/DMNYuhIoGSt/" 
+  },
+};
+
+    const answerMapping = {
+      "History section": { bombay: 2, nazaria: 1 },
+      "Kids’ corner, crayons everywhere!": { fala: 3, nazaria: 2, adc: 1, elle: 1 },
+      "Magazines & glossy covers": { elle: 3, music: 2, indiegrrrl: 1, tikao: 2 },
+      "Music section, vinyls spinning": { gracias: 2, music: 2, indiegrrrl: 2 },
+
+      "Yes, let’s build off what’s already here!": { nazaria: 1, bombay: .5, kalaghoda: 2, gracias: 2, tikao: .5, indiegrrrl: 1.5, elle: 1 },
+      "Sure, but can I bring my friends?": { adc: 2, nazaria: 1, gracias: 3, fala: 1, music: 1.5, tikao: 2 },
+      "I’ll only join if I get to do the creative direction.": { adc: 2, music: 1, indiegrrrl: 1, tikao: 1.5 },
+      "Wait, is there funding involved?": { kalaghoda: 2, tikao: 2, elle: 2, fala: 1 },
+
+      "A microphone with the crispiest autotune": { music: 3, indiegrrrl: 3, gracias: 2, tikao: 1 },
+      "A paintbrush that never runs out of color": { adc: 2, fala: 2, kalaghoda: 1 },
+      "A scroll full of old family secrets": { bombay: 2, nazaria: 1},
+      "A toy train that travels the world": { fala: 3, nazaria: .5, kalaghoda: 1, elle: 1, tikao: .5 },
+
+      "A buzzing arts festival with some krazy installations": { kalaghoda: 2, adc:2, gracias: 1 },
+      "A quiet small town with kids laughing and drawing": { fala: 2, bombay: 2 },
+      "A recording studio filled with tangled wires": { music: 3, indiegrrrl: 1, tikao: .5, gracias: 1 },
+      "A photo shoot with stylists and big lights": { elle: 4, kalaghoda: 2, music: .5, tikao: 2 },
+
+      "It’s about mentoring new voices.": { nazaria: 2, fala: 2, adc: 2, gracias: 1 },
+      "It’s about discovering forgotten history.": { bombay: 4, nazaria: 1, fala: 1 },
+      "It’s about teaching but in a wild, fun way.": { adc: 2, fala: 1, nazaria: 1, gracias: 1, tikao: .5 },
+      "It’s about getting signed to a label.": { music: 2, indiegrrrl: 2, tikao: 1, kalaghoda: 1, elle: 2 },
+
+      "Spiritual & ancestral": { bombay: 3, nazaria: 1 },
+      "Playful & community-driven": { fala: 2, adc: 2, gracias: 2, kalaghoda: 1 },
+      "Professional & glamorous": { elle: 3, indiegrrrl: 2, tikao: 2, kalaghoda: 1 },
+      "Bold & experimental": { kalaghoda: 2, tikao: 1, adc: 2, gracias: 1, indiegrrrl: .5 },
+
+      "Teaching people how to make art fun again": { adc: 2, fala: 2, nazaria: 2, gracias: 2, kalaghoda: 1 },
+      "Singing to crazy people": { music: 2, indiegrrrl: 1, gracias: 3 },
+      "Bridging old with new, carrying forward legacies": { nazaria: 1, bombay: 3, fala: 1, tikao: 2, kalaghoda: 2, elle: 1 },
+      "Digging up stories no one’s talking about": { bombay: 3 },
+
+      "Singing karaoke": { indiegrrrl: 2, music: 2, adc: 1, gracias: 3, elle: 1, tikao: .5 },
+      "Sitting in the corner, rolling": { indiegrrrl: 2, music: 1, elle: 1, tikao: 2, bombay: 1 },
+      "Taking over the art supplies and making everyone draw": { fala: 2, adc: 2, nazaria: .5, gracias: 1, kalaghoda: 1 },
+      "Styling your friends for a spontaneous photo shoot": { elle: 3, kalaghoda: 1, tikao: 1 },
+
+      "Cheese popcorn & coke": { adc: 1, music: 1 },
+      "Sour chewy candy": { fala: 1, nazaria: 1, elle: 1 },
+      "A warm cup of chai": { bombay: 1, tikao: .5, gracias: 1 },
+      "A champagne glass": { elle: 2, kalaghoda: 1, indiegrrrl: 2, tikao: 1 },
+
+      "Wow, let’s put this in a gallery!": { kalaghoda: 2, adc: 1, fala: 1, tikao: 1, nazaria: 2 },
+      "Do you want me to teach you shading?": { adc: 1, nazaria: 1, tikao: .5 },
+      "This reminds me of your great-grandparents’ story…": { bombay: 2, tikao: 1 },
+      "This could be a killer album cover.": { music: 2, indiegrrrl: 2, tikao: 1, gracias: 1, elle: 1 },
+
+      "Acoustic indie folk": { indiegrrrl: 2, gracias: 1, music: 1 },
+      "PC pop anthem": { music: 2, gracias: 1, indiegrrrl: 1, elle: 1 },
+      "Ilaiyaraaja": { bombay: 3, music: 1, nazaria: 1 },
+      "Silence, just colours and visuals": { kalaghoda: 2, tikao: 1 },
+
+      "Make all the critics your artistic collaborators": { adc: 2, nazaria: 1, gracias: 2 },
+      "Bringing new life and perspective to an existing project": { nazaria: 3, indiegrrrl: 1, kalaghoda: 2, tikao: .5 },
+      "Diving into an unknown place and finding stories": { bombay: 2, tikao: .5 },
+      "Reinventing yourself with a new aesthetic": { indiegrrrl: 2, kalaghoda: 1, tikao: 1, elle: 2 },
+
+      "Sing your heart out": { music: 3, gracias: 2, indiegrrrl: 2 },
+      "Teach them how to draw": { fala: 2, nazaria: 2 },
+      "Unveil a sculpture": { kalaghoda: 2, adc: 1 },
+      "Deliver a lecture about your past": { bombay: .5, elle: 2, fala: 1, tikao: 1 },
+
+      "Build an installation": { kalaghoda: 3.5, adc: 2, tikao: .5 },
+      "Record a music video": { music: 2, indiegrrrl: 2, gracias: 2, elle: 1, tikao: .5 },
+      "Fund a community class": { fala: 2, adc: 2, tikao: 1, nazaria: 2 },
+      "Travel to villages and run workshops": { nazaria: 2, bombay: 2, fala: 2 },
+
+      "Your voice, your songs, your music": { music: 3, indiegrrrl: 2, elle: 2, tikao: .5 },
+      "Your mentorship and guidance": { nazaria: 3, fala: 1, adc: 1 },
+      "Your ability to uncover untold stories": { bombay: 3, nazaria: 2, fala: 1},
+      "Your art practice that brought people together": { adc: 2, tikao: 1.5, fala: 1, bombay: 1, kalaghoda: 1.5 }
+    };
+
+    let currentQuestion = 0;
+    let scores = { nazaria:0, indiegrrrl:0, bombay:0, fala:0, adc:0, music:0, kalaghoda:0, elle:0, tikao:0 };
+    let history = []; // stores the selected option strings in order
+
+    // startQuiz - hides the start screen and begins the quiz
+    function startQuiz() {
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('quiz').style.display = 'block';
+      document.getElementById('quiz').setAttribute('aria-hidden', 'false');
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('result').setAttribute('aria-hidden', 'true');
+      currentQuestion = 0;
+      scores = { nazaria:0, indiegrrrl:0, bombay:0, fala:0, adc:0, music:0, kalaghoda:0, elle:0, tikao:0 };
+      history = [];
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      const quizDiv = document.getElementById("quiz");
+      // image path
+      const imgSrc = `assets/images/q${currentQuestion + 1}.png`;
+
+      // build options (use JSON.stringify to escape any quotes)
+      const optionsHTML = q.options.map(opt => `<button onclick='selectAnswer(${JSON.stringify(opt)})'>${opt}</button>`).join("");
+
+      quizDiv.innerHTML = `
+        <div class="question-image"><img src="${imgSrc}" alt="question image"/></div>
+        <div class="question">${q.question}</div>
+        <div class="options">
+          ${optionsHTML}
+          <div class="nav-row"><button id="backBtn" class="back-button" onclick="goBack()">Back</button></div>
+        </div>
+      `;
+
+      // disable Back on the first question
+      const backBtn = document.getElementById("backBtn");
+      if (backBtn) backBtn.disabled = currentQuestion === 0;
+
+      // Preload the very next image to smooth transitions for subsequent questions
+      const nextIndex = currentQuestion + 1;
+      if (nextIndex < quizData.length) {
+        const pre = new Image();
+        pre.src = `assets/images/q${nextIndex + 1}.png`;
+      }
+    }
+
+    function selectAnswer(answer) {
+      const points = answerMapping[answer];
+      if (points) {
+        for (let key in points) {
+          scores[key] += points[key];
+        }
+      }
+      // save selection to history (index matches question index)
+      history.push(answer);
+
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function goBack() {
+      // if there's no previous answer to undo, do nothing
+      if (history.length === 0) return;
+
+      // take last selected answer and subtract its points
+      const lastAnswer = history.pop();
+      const points = answerMapping[lastAnswer];
+      if (points) {
+        for (let key in points) {
+          scores[key] -= points[key];
+        }
+      }
+
+      // move back one question and reload
+      currentQuestion = Math.max(0, currentQuestion - 1);
+      // ensure quiz is visible (in case someone went back after result was shown)
+      document.getElementById("quiz").style.display = "block";
+      document.getElementById("quiz").setAttribute('aria-hidden', 'false');
+      document.getElementById("result").innerHTML = "";
+      document.getElementById("result").setAttribute('aria-hidden', 'true');
+      loadQuestion();
+    }
+
+    function showResult() {
+      // pick top score key (if tie, first in sorted order)
+      const top = Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];
+      const res = resultsData[top];
+      document.getElementById("quiz").style.display = "none";
+      document.getElementById("quiz").setAttribute('aria-hidden', 'true');
+      document.getElementById("result").setAttribute('aria-hidden', 'false');
+      // <-- Wrapped the logo in an anchor so clicks go to the YouTube link from resultsData
+      document.getElementById("result").innerHTML = `
+        <div class="result-title">${res.title}</div>
+        <div class="result">${res.text}</div>
+        <div class="result-logo">
+          <a href="${res.link}" target="_blank" rel="noopener noreferrer" aria-label="Open ${res.title} on YouTube">
+            <img src="${res.logo}" alt="${res.title} logo"/>
+          </a>
+        </div>
+      `;
+    }
+
+    // On initial load, show only the start screen (quiz will begin when user clicks Start)
+    (function init() {
+      document.getElementById('quiz').style.display = 'none';
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('result').innerHTML = '';
+      // keep start screen visible by default
+    })();
+  </script>
+</body>
+</html>

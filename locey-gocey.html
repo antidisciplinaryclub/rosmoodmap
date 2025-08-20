@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Locey Gocey</title>
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/images/favicon.png">
+  <link rel="apple-touch-icon" type="image/png" sizes="192x192" href="assets/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bitcount:wght@100..900&display=swap" rel="stylesheet">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #fac0ff;
+      font-family: "Bitcount", system-ui;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.1) 4px, transparent 4px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 4px, transparent 4px);
+      background-size: 25px 25px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* --- Page title (added) --- */
+    .page-title {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+       font-size: 2rem;
+      text-align: center;
+      font-weight: 800;
+      color: #1b1b1b;
+      z-index: 5000;
+      background: rgba(255,255,255,0.06);
+      pointer-events: none; /* non-interactive so it doesn't get in the way */
+      letter-spacing: 0.8px;
+    }
+
+    .carousel-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* SMALL, TARGETED CHANGE: use fixed so arrows are always inside the viewport */
+    .arrow {
+      position: fixed;            /* <- keep fixed so arrows remain in viewport */
+      top: 50%;
+      transform: translateY(-50%);
+      width: 80px;
+      cursor: pointer;
+      z-index: 99999; /* Always above characters */
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      will-change: transform;
+    }
+
+    .arrow:hover {
+      opacity: 1;
+    }
+
+    /* left/right arrow placement uses safe-area to ensure visibility on phones */
+    .arrow.left {
+      left: 10px;
+      transform: translateY(-50%) scaleX(1);
+      opacity: 1;
+      z-index: 100;
+    }
+
+    .arrow.right {
+      right: 10px;
+      transform: translateY(-50%) scaleX(-1);
+      opacity: 1;
+      z-index: 100;
+    }
+
+    .characters {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 80%;
+      height: 80%;
+      position: relative;
+    }
+
+    .character {
+      position: absolute;
+      transition: transform 0.6s ease, opacity 0.6s ease;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .character img {
+      max-height: 60vh;
+      transition: transform 0.3s ease;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .character p {
+      margin: 10px 0 0;
+      font-size: 1.7rem;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .character.center img:hover {
+      transform: scale(1.1);
+    }
+
+    /* Positions */
+    .left {
+      transform: translateX(-400px) scale(0.7);
+      opacity: 0.6;
+      z-index: 1;
+    }
+
+    .center {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+      z-index: 3;
+    }
+
+    .right {
+      transform: translateX(400px) scale(0.7);
+      opacity: 0.6;
+      z-index: 1;
+    }
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Popup Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 80%;
+      max-height: 80%;
+      overflow-y: auto;
+      text-align: left;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .modal h2 {
+      margin-top: 0;
+    }
+
+    .modal a {
+      display: inline-block;
+      margin-right: 10px;
+      color: #0077cc;
+      text-decoration: underline;
+    }
+
+    .close-btn {
+      margin-top: 15px;
+      display: inline-block;
+      padding: 8px 16px;
+      background: #fac0ff;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+
+  </style>
+</head>
+<body>
+  <!-- visible page title added -->
+  <h1 class="page-title">Locey Gocey Station</h1>
+
+  <div class="carousel-container">
+    <!-- Left Arrow -->
+    <img src="assets/images/arrow.png" class="arrow left" id="leftArrow" alt="Left Arrow">
+
+    <!-- Characters -->
+    <div class="characters" id="characters">
+      <div class="character center" data-character="ananya">
+        <img src="assets/images/ananya.png" alt="Ananya">
+        <p>Ananya</p>
+      </div>
+      <div class="character right" data-character="aman">
+        <img src="assets/images/aman.png" alt="Aman">
+        <p>Aman</p>
+      </div>
+      <div class="character hidden" data-character="abhishek">
+        <img src="assets/images/abhishek.png" alt="Abhishek">
+        <p>Abhishek</p>
+      </div>
+      <div class="character hidden" data-character="pooja">
+        <img src="assets/images/pooja.png" alt="Pooja">
+        <p>Pooja</p>
+      </div>
+    </div>
+
+    <!-- Right Arrow -->
+    <img src="assets/images/arrow.png" class="arrow right" id="rightArrow" alt="Right Arrow">
+  </div>
+
+  <!-- Popup Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent">
+      <h2 id="modalName">Character Name</h2>
+      <p><strong>Skills:</strong> <span id="modalSkills"></span></p>
+      <p><strong>Reason For Locing Ro:</strong> <span id="modalReason"></span></p>
+      <p><strong>Gifts:</strong>
+        <a id="link1" href="#" target="_blank">Link 1</a>
+        <a id="link2" href="#" target="_blank">Link 2</a>
+        <a id="link3" href="#" target="_blank">Link 3</a>
+      </p>
+      <button class="close-btn" id="closeBtn">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const characters = document.querySelectorAll('.character');
+    const leftArrow = document.getElementById('leftArrow');
+    const rightArrow = document.getElementById('rightArrow');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalName = document.getElementById('modalName');
+    const modalSkills = document.getElementById('modalSkills');
+    const modalReason = document.getElementById('modalReason');
+    const link1 = document.getElementById('link1');
+    const link2 = document.getElementById('link2');
+    const link3 = document.getElementById('link3');
+    const closeBtn = document.getElementById('closeBtn');
+
+    let currentIndex = 0;
+
+    // Character data (you can change this later)
+    const characterData = {
+      ananya: {
+        name: "Ananya",
+        skills: "Writing, Game Design",
+        reason: "She's a voidy-smartie-patootie with an open heart.",
+        links: ["https://youtube.com", "https://google.com", "https://facebook.com"]
+      },
+      aman: {
+        name: "Aman",
+        skills: "Writing, Game Design",
+        reason: "He's a voidy-smartie-patootie with an open heart.",
+        links: ["https://youtube.com", "https://google.com", "https://facebook.com"]
+      },
+      abhishek: {
+        name: "Abhishek",
+        skills: "Writing, Game Design",
+        reason: "He's a voidy-smartie-patootie with an open heart.",
+        links: ["https://youtube.com", "https://google.com", "https://facebook.com"]
+      },
+      pooja: {
+        name: "Pooja",
+        skills: "Writing, Game Design",
+        reason: "She's a voidy-smartie-patootie with an open heart.",
+        links: ["https://youtube.com", "https://google.com", "https://facebook.com"]
+      }
+    };
+
+    function updateCarousel() {
+      characters.forEach((char, i) => {
+        char.classList.remove('left', 'center', 'right', 'hidden');
+        if (i === currentIndex) {
+          char.classList.add('center');
+        } else if (i === (currentIndex + 1) % characters.length) {
+          char.classList.add('right');
+        } else if (i === (currentIndex - 1 + characters.length) % characters.length) {
+          char.classList.add('left');
+        } else {
+          char.classList.add('hidden');
+        }
+      });
+    }
+
+    rightArrow.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % characters.length;
+      updateCarousel();
+    });
+
+    leftArrow.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + characters.length) % characters.length;
+      updateCarousel();
+    });
+
+    characters.forEach(char => {
+      char.addEventListener('click', () => {
+        if (char.classList.contains('center')) {
+          const key = char.getAttribute('data-character');
+          const data = characterData[key];
+          modalName.textContent = data.name;
+          modalSkills.textContent = data.skills;
+          modalReason.textContent = data.reason;
+          link1.href = data.links[0];
+          link2.href = data.links[1];
+          link3.href = data.links[2];
+          modalOverlay.style.display = 'flex';
+        }
+      });
+    });
+
+    closeBtn.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+    });
+
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) {
+        modalOverlay.style.display = 'none';
+      }
+    });
+
+    updateCarousel();
+  </script>
+</body>
+</html>

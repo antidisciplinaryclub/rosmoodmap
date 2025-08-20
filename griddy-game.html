@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Griddy Game</title>
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/images/favicon.png">
+  <link rel="apple-touch-icon" type="image/png" sizes="192x192" href="assets/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bitcount:wght@100..900&display=swap" rel="stylesheet">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #fff;
+      font-family: "Bitcount", system-ui;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.1) 4px, transparent 4px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 4px, transparent 4px);
+      background-size: 25px 25px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Ensure intro and message screens sit above everything and are clickable */
+    #introScreen, #messageScreen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: clamp(16px, 4vw, 40px);
+      box-sizing: border-box;
+      text-align: center;
+      z-index: 3000; /* <-- high so it sits above game area */
+      pointer-events: auto;
+    }
+
+    #introScreen h1, #messageScreen p {
+      max-width: min(90%, 40ch);
+      word-wrap: break-word;
+    }
+
+    #introScreen p, #messageScreen p {
+      font-size: clamp(16px, 2.5vw, 18px);
+    }
+
+    /* Explicit button styles so pointer appears reliably */
+    #introScreen button, #messageScreen button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: clamp(14px, 2vw, 18px);
+      cursor: pointer; /* pointer should show now */
+      border: none;
+      border-radius: 8px;
+      background: black;
+      color: white;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #introScreen button:hover, #messageScreen button:hover {
+      transform: translateY(-2px);
+      transition: transform 120ms ease;
+    }
+
+    /* PNG styling - these sit in the game area under the intro screen */
+    .griddy-img {
+      position: absolute;
+      max-width: 300px;
+      max-height: 300px;
+      cursor: pointer;
+      display: none;
+      user-select: none;
+      transition: transform 120ms linear, opacity 120ms linear;
+      will-change: transform, opacity, left, top;
+      z-index: 1000; /* below introScreen */
+      pointer-events: auto;
+    }
+
+    /* Full-screen message (same look as before) */
+    #messageScreen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: white;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 3000;
+      text-align: center;
+    }
+    #messageScreen p {
+      font-size: 18px;
+      margin-bottom: 20px;
+      max-width: 600px;
+    }
+    #messageScreen button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background: black;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Intro Screen -->
+<div id="introScreen">
+  <h1>The Griddy Game</h1>
+  <p>
+    The rules are simple:<br>
+    1. Random images will pop up on the screen.<br>
+    2. Click them before they disappear.<br>
+    3. Each image reveals a special message.<br>
+    Catch them all!
+  </p>
+  <button id="startGameBtn" aria-label="Start game">Start Game</button>
+</div>
+
+<!-- Game area (images will be appended here) -->
+<div id="gameArea" style="position: absolute; top:0; left:0; width:100%; height:100%;"></div>
+
+<!-- Message Screen -->
+<div id="messageScreen" aria-live="polite">
+  <p id="messageText"></p>
+  <button id="restartBtn" aria-label="Restart game">Restart Game</button>
+</div>
+
+<script>
+  // Self-contained module to avoid polluting global scope
+  (function () {
+    // --- Data (unchanged messages) ---
+    const images = [
+      { file: "a.png", message: "we had a fight right after this.... it was crazy u were really over my antics.... sorry i don't mean to joke about it u know i loce u ..... i hope u thought i looked nice and cute..." },
+      { file: "b.png", message: "u are literally a precious human being. i don't think i could've ever predicted that even two years ago the loce of my lice would be shoving her fingers down her nostrils regularly. ur nostrils are really cute and literally have cheeky weekies of their own. i loce u." },
+      { file: "c.png", message: "julius ..... julio... sleepy hulu..... perfect specimen..." },
+      { file: "d.png", message: "i hope this is important to u." },
+      { file: "e.png", message: "let's go for a sushi date soon. whenever possible. i miss going out on dates... i will take us out on a date when i get my increment .." },
+      { file: "f.png", message: "cheekie weekies. in their raw, perfect state. ur nostrils are inflamed, ur hairs are splayed all over. its amazing. there will never be anything like this. its honestly unfortunate to think about your mortal cheeky weekies in this horrible world. its them against evil forces, there will never be cheeky weekies so supple. its very crucial that we think about this, because you see, they hold truths. as i have told u before, ur cheeky weekies are the crash pad (wink wink) to the nasty horrible tar like thoughts ur having. the horrible thoughts are not ur fault, but its important for the cheeky weekies to serve as a soft landing for all those terrible thoughts before they get a chance to spread all over your body. its very important." },
+      { file: "g.jpg", message: "YOU CAUGHT ME. Yoki have fun catching em all ro MY FACE. oki have fun catching em all ro, loce u" },
+      { file: "h.jpeg", message: "WHY'D YOU CATCH THIS ONE HA? but in all seriousness, this was THE MOST random crossover episode ever. just a gentle reminder of mistakes we all make ;) lol k bye (go catch more pics)" },
+      { file: "i.jpeg", message: "HANDYCAM................. THE LONG WAY.........." },
+      { file: "j.jpeg", message: "you're so stupid and so idiot and I want to make u into a sushi and just dip your eyelids into wasabi and chomp chomp chomp" },
+      { file: "k.jpeg", message: "no it's not Zain, it's me, aman. Nice to meet you 🦞" },
+      { file: "l.jpeg", message: "throwback to when we tried taking headshots for me, only to realise none of them actually came out nicely...... still fun tho ...... (this was the best one)" },
+      { file: "m.jpeg", message: "you have now clicked on douglas. enjoy." },
+      { file: "n.jpeg", message: "horse." },
+      { file: "o.jpeg", message: "BALD AMAN. BALD AMAN. BALD AMAN. Share with a friend for good luck 👍" },
+      { file: "p.jpeg", message: "i will go and poke abhishek in the belly, if u ever make this face again. you've been warned." },
+      { file: "q.jpeg", message: "bork." },
+      { file: "r.jpeg", message: "WELCOME. you've reached aman's advertisements. you are entitled to one (1) free studio session with aman. anytime, any place of your choice. looking forward to working with you." },
+      { file: "s.jpeg", message: "me when i have a glass of wine and Ro is sitting directly in front of me (enamored)" },
+      { file: "t.jpeg", message: "why'd you click this one? there's no editing here. it's just a regular picture of you Ro. this is how you're perceived. thank you" },
+    ];
+
+    // --- DOM refs ---
+    const introScreen = document.getElementById('introScreen');
+    const startBtn = document.getElementById('startGameBtn');
+    const gameArea = document.getElementById('gameArea');
+    const messageScreen = document.getElementById('messageScreen');
+    const messageText = document.getElementById('messageText');
+    const restartBtn = document.getElementById('restartBtn');
+
+    // --- Config (tweak for difficulty) ---
+    const MAX_CONCURRENT = 5;       // how many images may be visible simultaneously
+    const SPAWN_MIN = 100;          // min ms between spawn attempts
+    const SPAWN_MAX = 400;          // max ms between spawn attempts
+    const LIFE_MIN = 300;           // min lifespan for each image (ms)
+    const LIFE_MAX = 1000;          // max lifespan for each image (ms)
+    const BUFFER = 100;             // keep images fully on-screen
+
+    // --- State ---
+    let running = false;
+    const pool = [];    // {el, active, hideTimer}
+    const timers = new Set();
+
+    // small helpers
+    const rand = (a, b) => Math.random() * (b - a) + a;
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    const srcFor = (file) => `assets/images/${file}`;
+
+    // create a pool of image elements
+    for (let i = 0; i < MAX_CONCURRENT; i++) {
+      const img = document.createElement('img');
+      img.className = 'griddy-img';
+      img.style.display = 'none';
+      img.dataset.slot = i;
+      img.setAttribute('alt', 'griddy target');
+      img.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        // show its message and pause the game
+        showMessage(img.dataset.message || '');
+      });
+      gameArea.appendChild(img);
+      pool.push({ el: img, active: false, hideTimer: null });
+    }
+
+    // spawn one into a free slot
+    function spawnOne() {
+      if (!running) return;
+
+      // find a free slot
+      const slot = pool.find(s => !s.active);
+      if (!slot) return;
+
+      const item = images[Math.floor(Math.random() * images.length)];
+      const el = slot.el;
+      el.src = srcFor(item.file);
+      el.dataset.message = item.message || '';
+
+      // random rotation, small scale
+      const rot = Math.floor(rand(-25, 25));
+      el.style.transform = `rotate(${rot}deg)`;
+      el.style.opacity = '0';
+      el.style.display = 'block';
+
+      // random on-screen position
+      const maxX = Math.max(0, window.innerWidth - BUFFER);
+      const maxY = Math.max(0, window.innerHeight - BUFFER);
+      const x = clamp(rand(0, maxX), 0, maxX);
+      const y = clamp(rand(0, maxY), 0, maxY);
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+
+      // fade in
+      requestAnimationFrame(() => {
+        el.style.transition = 'opacity 140ms linear, transform 140ms linear';
+        el.style.opacity = '1';
+        el.style.transform = `rotate(${rot}deg) scale(${rand(0.98, 1.05)})`;
+      });
+
+      slot.active = true;
+
+      // schedule hide
+      const life = Math.floor(rand(LIFE_MIN, LIFE_MAX));
+      const hideT = setTimeout(() => {
+        hideSlot(slot);
+        timers.delete(hideT);
+      }, life);
+      slot.hideTimer = hideT;
+      timers.add(hideT);
+    }
+
+    function hideSlot(slot) {
+      if (!slot || !slot.active) return;
+      const el = slot.el;
+      el.style.opacity = '0';
+      const cleanup = setTimeout(() => {
+        el.style.display = 'none';
+        slot.active = false;
+        if (slot.hideTimer) {
+          clearTimeout(slot.hideTimer);
+          slot.hideTimer = null;
+        }
+        timers.delete(cleanup);
+      }, 180);
+      timers.add(cleanup);
+    }
+
+    // schedule spawn attempts at random intervals
+    function scheduleSpawn() {
+      if (!running) return;
+      const delay = Math.floor(rand(SPAWN_MIN, SPAWN_MAX));
+      const t = setTimeout(() => {
+        timers.delete(t);
+        // attempt one or sometimes two for unpredictability
+        spawnOne();
+        if (Math.random() < 0.3) spawnOne();
+        scheduleSpawn();
+      }, delay);
+      timers.add(t);
+    }
+
+    function clearAllTimers() {
+      for (const t of Array.from(timers)) {
+        clearTimeout(t);
+        timers.delete(t);
+      }
+    }
+
+    function hideAll() {
+      pool.forEach(slot => {
+        if (slot.active) {
+          slot.el.style.opacity = '0';
+          const c = setTimeout(() => {
+            slot.el.style.display = 'none';
+            if (slot.hideTimer) {
+              clearTimeout(slot.hideTimer);
+              slot.hideTimer = null;
+            }
+            slot.active = false;
+            timers.delete(c);
+          }, 180);
+          timers.add(c);
+        }
+      });
+    }
+
+    function showMessage(msg) {
+      running = false;
+      clearAllTimers();
+      hideAll();
+      messageText.textContent = msg || '';
+      messageScreen.style.display = 'flex';
+      // bring message screen to front
+      messageScreen.style.zIndex = 3000;
+    }
+
+    function startGame() {
+      // Safety: ensure intro is hidden and message hidden
+      introScreen.style.display = 'none';
+      messageScreen.style.display = 'none';
+
+      // reset pool
+      pool.forEach(slot => {
+        slot.el.style.display = 'none';
+        slot.el.style.opacity = '0';
+        slot.active = false;
+        if (slot.hideTimer) {
+          clearTimeout(slot.hideTimer);
+          slot.hideTimer = null;
+        }
+        slot.el.dataset.message = '';
+      });
+      clearAllTimers();
+
+      running = true;
+      // kick off a few spawns for a lively start
+      spawnOne();
+      const warm = setTimeout(() => { if (running) spawnOne(); timers.delete(warm); }, Math.floor(rand(120,420)));
+      timers.add(warm);
+      scheduleSpawn();
+
+      console.log('Game started');
+    }
+
+    function restartGame() {
+      messageScreen.style.display = 'none';
+      clearAllTimers();
+      pool.forEach(slot => {
+        slot.el.style.display = 'none';
+        slot.el.style.opacity = '0';
+        slot.active = false;
+        if (slot.hideTimer) {
+          clearTimeout(slot.hideTimer);
+          slot.hideTimer = null;
+        }
+        slot.el.dataset.message = '';
+      });
+      // short delay so things don't all appear at once
+      setTimeout(() => {
+        if (!running) {
+          running = true;
+          spawnOne();
+          scheduleSpawn();
+        }
+      }, 160);
+    }
+
+    // Attach events after elements exist
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', restartGame);
+
+    // Escape to go back to intro (pause)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        running = false;
+        clearAllTimers();
+        hideAll();
+        messageScreen.style.display = 'none';
+        introScreen.style.display = 'flex';
+      }
+    });
+
+    // Keep images within bounds on resize
+    window.addEventListener('resize', () => {
+      pool.forEach(slot => {
+        if (!slot.active) return;
+        const el = slot.el;
+        const left = parseFloat(el.style.left || 0);
+        const top = parseFloat(el.style.top || 0);
+        const maxX = Math.max(0, window.innerWidth - BUFFER);
+        const maxY = Math.max(0, window.innerHeight - BUFFER);
+        el.style.left = `${clamp(left, 0, maxX)}px`;
+        el.style.top = `${clamp(top, 0, maxY)}px`;
+      });
+    });
+
+    // Cleanup timers when leaving
+    window.addEventListener('beforeunload', () => {
+      clearAllTimers();
+    });
+
+    // sanity log
+    console.log('Griddy Game ready — click Start Game.');
+  })();
+</script>
+
+</body>
+</html>

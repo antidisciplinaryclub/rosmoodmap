@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WhatsApp Sticker Bin!</title>
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/images/favicon.png">
+  <link rel="apple-touch-icon" type="image/png" sizes="192x192" href="assets/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bitcount:wght@100..900&display=swap" rel="stylesheet">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #fff;
+      font-family: "Bitcount", system-ui;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.1) 4px, transparent 4px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 4px, transparent 4px);
+      background-size: 25px 25px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .sticker {
+      position: absolute;
+      max-width: 180px;
+      max-height: 180px;
+      user-select: none;
+      cursor: grab;
+      transform-origin: center;
+      transition: transform 0.2s ease;
+    }
+    .sticker:active {
+      cursor: grabbing;
+    }
+    .sticker:hover {
+      transform: scale(1.05) rotate(var(--rotation));
+    }
+
+    /* Popup styles */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      z-index: 1000;
+      display: none;
+      text-align: center;
+      font-family: "Bitcount", system-ui;
+      min-width: 220px;
+    }
+    .popup p { margin: 8px 0 14px; }
+    .popup button {
+      margin: 0;
+      padding: 10px 15px;
+      font-size: 14px;
+      font-family: "Bitcount", system-ui;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+    .popup button.download {
+      background-color: #007bff;
+      color: white;
+    }
+
+    /* Overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 900;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Overlay + Popup -->
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="popup">
+  <p>U want it???</p>
+  <button id="downloadBtn" class="download">Download</button>
+</div>
+
+<script>
+  // --- Config / files ---
+  const stickerFiles = [
+    "1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg","6.jpg", "7.jpg", "8.gif", "9.gif", "10.gif","11.jpg", "12.jpg", "13.gif", "14.jpeg","15.jpeg","16.jpeg","17.jpeg","18.jpeg","19.jpeg","20.jpeg","21.jpeg",
+    "22.jpg", "23.gif", "24.gif", "25.gif", "26.jpeg", "27.jpeg","28.jpeg","29.jpeg","30.jpeg","31.jpeg","32.jpeg","33.jpeg"
+  ];
+
+  const container = document.body;
+  const popup = document.getElementById('popup');
+  const overlay = document.getElementById('overlay');
+  const downloadBtn = document.getElementById('downloadBtn');
+  let currentStickerSrc = '';
+
+  const stickerSize = 180;
+  const margin = 40;
+
+  // Helper: builds an absolute URL for relative paths (handles spaces)
+  function makeAbsoluteUrl(path) {
+    return new URL(path, location.href).href;
+  }
+
+  // Helper: get filename from URL
+  function filenameFromUrl(url) {
+    try {
+      const u = new URL(url, location.href);
+      const parts = u.pathname.split('/');
+      const name = parts.pop() || 'sticker';
+      return decodeURIComponent(name);
+    } catch (e) {
+      return 'sticker';
+    }
+  }
+
+  function placeSticker(file) {
+    const img = document.createElement("img");
+    // encode spaces and create absolute URL
+    const srcPath = `assets/images/sticker gallery/${file}`;
+    img.src = makeAbsoluteUrl(srcPath);
+    img.classList.add("sticker");
+
+    // Random position within viewport
+    const x = Math.random() * (window.innerWidth - margin * 2 - stickerSize) + margin;
+    const y = Math.random() * (window.innerHeight - margin * 2 - stickerSize) + margin;
+    img.style.left = `${x}px`;
+    img.style.top = `${y}px`;
+
+    // Random rotation
+    const rotation = Math.random() * 60 - 30;
+    img.style.setProperty('--rotation', `${rotation}deg`);
+    img.style.transform = `rotate(${rotation}deg)`;
+
+    // Click opens popup
+    img.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentStickerSrc = img.src;
+      popup.style.display = 'block';
+      overlay.style.display = 'block';
+    });
+
+    // Drag functionality (per-image listeners; cleaned up on mouseup)
+    let isDragging = false;
+    let offsetX = 0, offsetY = 0;
+
+    function onMouseMove(e) {
+      if (!isDragging) return;
+      let newX = e.clientX - offsetX;
+      let newY = e.clientY - offsetY;
+
+      // Keep inside viewport
+      newX = Math.max(0, Math.min(window.innerWidth - stickerSize, newX));
+      newY = Math.max(0, Math.min(window.innerHeight - stickerSize, newY));
+
+      img.style.left = `${newX}px`;
+      img.style.top = `${newY}px`;
+    }
+
+    function onMouseUp() {
+      if (!isDragging) return;
+      isDragging = false;
+      img.style.zIndex = '';
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    img.addEventListener('mousedown', (e) => {
+      // only left button
+      if (e.button !== 0) return;
+      isDragging = true;
+      offsetX = e.clientX - img.offsetLeft;
+      offsetY = e.clientY - img.offsetTop;
+      img.style.zIndex = 1000;
+      // attach document-level listeners (so drag works even if pointer leaves image)
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+
+    container.appendChild(img);
+  }
+
+  // Place stickers
+  stickerFiles.forEach(placeSticker);
+
+  // Download action
+  downloadBtn.addEventListener('click', async () => {
+    if (!currentStickerSrc) return;
+
+    const stickerUrl = currentStickerSrc;
+    const filename = filenameFromUrl(stickerUrl);
+
+    // Try to fetch the file as blob (works when same-origin or CORS allows)
+    try {
+      const resp = await fetch(stickerUrl, { mode: 'cors' });
+      if (!resp.ok) throw new Error('Network response was not ok: ' + resp.status);
+      const blob = await resp.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      // revoke after a small timeout to ensure download started
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1500);
+
+      closePopup();
+      return;
+    } catch (err) {
+      // If fetch fails (CORS, older browsers), fallback to opening the image for user to save manually
+      console.warn('Download via fetch failed, falling back to open-in-new-tab:', err);
+      window.open(stickerUrl, '_blank');
+      alert('Could not download automatically. The image was opened in a new tab — right-click and Save Image As to download.');
+      closePopup();
+    }
+  });
+
+  // Close popup on overlay click
+  overlay.addEventListener('click', closePopup);
+
+  // Close on ESC key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closePopup();
+  });
+
+  function closePopup() {
+    popup.style.display = 'none';
+    overlay.style.display = 'none';
+    currentStickerSrc = '';
+  }
+
+  // Ensure window resize doesn't put stickers offscreen if viewport shrinks
+  window.addEventListener('resize', () => {
+    // optional: keep as-is (sticker positions are absolute). If you want to clamp positions on resize, we can add logic.
+  });
+</script>
+
+</body>
+</html>

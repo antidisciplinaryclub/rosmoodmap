@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/images/favicon.png">
+  <link rel="apple-touch-icon" type="image/png" sizes="192x192" href="assets/images/favicon.png">
+  <title>The Void</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .void-gif {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    /* Toggle button */
+    #audio-toggle {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 6px;
+      cursor: pointer;
+      z-index: 2;
+      transition: background 0.3s;
+    }
+
+    #audio-toggle:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <img src="assets/images/void.gif" alt="The Void" class="void-gif" />
+
+  <!-- Audio element -->
+  <audio id="void-audio" loop>
+    <source src="assets/sounds/voidsound.wav" type="audio/wav">
+  </audio>
+
+  <!-- Toggle Button (starts OFF) -->
+  <button id="audio-toggle">🔇 Off</button>
+
+  <script>
+    const audio = document.getElementById("void-audio");
+    const toggleBtn = document.getElementById("audio-toggle");
+
+    let isPlaying = false; // start OFF
+
+    toggleBtn.addEventListener("click", () => {
+      if (isPlaying) {
+        audio.pause();
+        toggleBtn.textContent = "🔇 Off";
+      } else {
+        audio.play();
+        toggleBtn.textContent = "🔊 On";
+      }
+      isPlaying = !isPlaying;
+    });
+  </script>
+</body>
+</html>
