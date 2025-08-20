@@ -26,6 +26,38 @@
       position: relative;
     }
 
+        .home-back {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 8px) + 8px);
+  left: calc(env(safe-area-inset-left, 8px) + 8px);
+  z-index: 99999;
+  display: inline-block;
+  padding: 10px 12px;        /* <-- bigger tap area */
+  font-size: 15px;           /* <-- slightly larger text */
+  line-height: 1;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid #000;
+  color: #000;
+  text-decoration: none;
+  border-radius: 8px;        /* rounded a bit more */
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-width: 56px;           /* ensure a comfortable minimum width */
+  text-align: center;
+}
+.home-back:hover {
+  background: #000;
+  color: #fff;
+}
+
+    @media (max-width: 420px) {
+       .home-back {
+    padding: 12px 14px;
+    min-width: 64px;
+  }
+    }
+
     .sticker {
       position: absolute;
       max-width: 180px;
@@ -87,6 +119,9 @@
   </style>
 </head>
 <body>
+
+    <a class="home-back" href="https://antidisciplinaryclub.github.io/rosmoodmap/" rel="noopener noreferrer" aria-label="Back to home">Back to Map</a>
+
 
 <!-- Overlay + Popup -->
 <div class="overlay" id="overlay"></div>
