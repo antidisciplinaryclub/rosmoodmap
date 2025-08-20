@@ -112,7 +112,6 @@
       display: flex;
       flex-direction: column;
       align-items: center; /* centers the options horizontally */
-      margin-top: 10px;
       padding: 10px;
       gap: 12px; /* <-- adds space between each button */
       width: 100%;
@@ -330,7 +329,7 @@ const resultsData = {
     title: "Gracias Granny Open Mic Nights", 
     text: "When it comes to crowds, you think the more the merrier. Like Rohini as a host in the Open Mic Nights at GGs, you bring people in, make them feel included and make them come out of their shell", 
     logo: "assets/images/graciaslogo.png",
-    link: "https://www.instagram.com/p/DMNYuhIoGSt/" 
+    link: "https://www.youtube.com" 
   },
 };
 
@@ -434,8 +433,8 @@ const resultsData = {
       // image path
       const imgSrc = `assets/images/q${currentQuestion + 1}.png`;
 
-      // build options (use JSON.stringify to escape any quotes)
-      const optionsHTML = q.options.map(opt => `<button onclick='selectAnswer(${JSON.stringify(opt)})'>${opt}</button>`).join("");
+      // build options (added type="button" to prevent focus/form quirks on mobile)
+      const optionsHTML = q.options.map(opt => `<button type="button" onclick='selectAnswer(${JSON.stringify(opt)})'>${opt}</button>`).join("");
 
       quizDiv.innerHTML = `
         <div class="question-image"><img src="${imgSrc}" alt="question image"/></div>
@@ -456,9 +455,28 @@ const resultsData = {
         const pre = new Image();
         pre.src = `assets/images/q${nextIndex + 1}.png`;
       }
+
+      // ensure nothing is focused after we inject the new content (prevents carry-over focus on mobile)
+      // a tiny timeout lets the browser settle DOM focus after the injection
+      setTimeout(() => {
+        try {
+          if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            document.activeElement.blur();
+          }
+        } catch (e) {
+          // ignore any exotic environments
+        }
+      }, 10);
     }
 
     function selectAnswer(answer) {
+      // ensure any lingering focus (from touch/click) is cleared immediately
+      try {
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+          document.activeElement.blur();
+        }
+      } catch (e) {}
+
       const points = answerMapping[answer];
       if (points) {
         for (let key in points) {
@@ -516,6 +534,15 @@ const resultsData = {
           </a>
         </div>
       `;
+
+      // After showing results, clear any focus to avoid accidental highlights on touch devices
+      setTimeout(() => {
+        try {
+          if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            document.activeElement.blur();
+          }
+        } catch (e) {}
+      }, 10);
     }
 
     // On initial load, show only the start screen (quiz will begin when user clicks Start)
