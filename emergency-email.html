@@ -35,7 +35,7 @@
   z-index: 99999;
   display: inline-block;
   padding: 10px 12px;        /* <-- bigger tap area */
-  font-size: 14px;           /* <-- slightly larger text */
+  font-size: 15px;           /* <-- slightly larger text */
   line-height: 1;
   background: rgba(255,255,255,0.95);
   border: 1px solid #000;
@@ -52,6 +52,13 @@
   background: #000;
   color: #fff;
 }
+
+    @media (max-width: 420px) {
+       .home-back {
+    padding: 12px 14px;
+    min-width: 64px;
+  }
+    }
 
     @media (max-width: 420px) {
        .home-back {
