@@ -29,14 +29,14 @@
     }
 
     /* --- Tiny persistent home/back button --- */
-.home-back {
+    .home-back {
   position: fixed;
   top: calc(env(safe-area-inset-top, 8px) + 8px);
   left: calc(env(safe-area-inset-left, 8px) + 8px);
   z-index: 99999;
   display: inline-block;
   padding: 10px 12px;        /* <-- bigger tap area */
-  font-size: 14px;           /* <-- slightly larger text */
+  font-size: 15px;           /* <-- slightly larger text */
   line-height: 1;
   background: rgba(255,255,255,0.95);
   border: 1px solid #000;
@@ -54,6 +54,12 @@
   color: #fff;
 }
 
+    @media (max-width: 420px) {
+       .home-back {
+    padding: 12px 14px;
+    min-width: 64px;
+  }
+    }
     .container {
       position: relative;
       width: 100%;
@@ -137,14 +143,6 @@
         font-size: 4vw;
         padding: 0.6em 1em;
       }
-    }
-
-    @media (max-width: 420px) {
-       .home-back {
-    padding: 12px 14px;
-    font-size: 20px;
-    min-width: 64px;
-  }
     }
 
   </style>
