@@ -27,7 +27,7 @@
     }
 
     /* --- Tiny persistent home/back button --- */
-    .home-back {
+.home-back {
   position: fixed;
   bottom: calc(env(safe-area-inset-top, 8px) + 8px);
   left: calc(env(safe-area-inset-left, 8px) + 8px);
@@ -51,13 +51,6 @@
   background: #000;
   color: #fff;
 }
-
-    @media (max-width: 420px) {
-       .home-back {
-    padding: 12px 14px;
-    min-width: 64px;
-  }
-    }
 
 
     .quiz-container {
@@ -252,6 +245,11 @@
       .back-button { width: 30%; min-width: 74px; }
       .quiz-title { font-size: 2.2rem; }
       .quiz-rules { font-size: 1rem; }
+      /* make the persistent home-back slightly smaller on very small screens */
+       .home-back {
+    padding: 12px 14px;
+    font-size: 15px;
+    min-width: 64px;
   }
     }
   </style>
